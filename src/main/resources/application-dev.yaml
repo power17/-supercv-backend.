@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/supercv_db_dev?serverTimezone=Asia/Shanghai&useUnicode=true
-    username: username_dev
-    password: password_dev
+    username: root
+    password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 初始连接数
