@@ -17,6 +17,7 @@ import { type CSSProperties, type FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { devLogin } from '../api/auth'
 import { useAuth } from '../auth/AuthContext'
+import { WechatQrLogin } from '../components/WechatQrLogin'
 
 const engines = [
   {
@@ -247,14 +248,7 @@ export function HomePage({ initialLoginOpen = false }: { initialLoginOpen?: bool
             <h2 id="quick-login-title">扫码登录</h2>
 
             {!alternateLogin ? (
-              <>
-                <div className="quick-user-avatar"><span>p</span></div>
-                <strong className="quick-user-name">power</strong>
-                <button className="wechat-quick-button" type="button" onClick={handleQuickLogin}>微信快捷登录</button>
-                <button className="other-login-button" type="button" onClick={() => setAlternateLogin(true)}>
-                  使用其他头像、昵称或账号
-                </button>
-              </>
+              <WechatQrLogin onUseDevLogin={() => setAlternateLogin(true)} />
             ) : (
               <form className="alternate-login-form" onSubmit={handleDevLogin}>
                 <label htmlFor="home-telephone">本地开发账号</label>

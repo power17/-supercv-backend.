@@ -4,12 +4,14 @@ import { EditorPage } from './pages/EditorPage'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { ResumeListPage } from './pages/ResumeListPage'
+import { WechatLoginCallbackPage } from './pages/WechatLoginCallbackPage'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/login/wechat/callback" element={<WechatLoginCallbackPage />} />
       <Route
         path="/resume"
         element={
@@ -30,4 +32,3 @@ export default function App() {
     </Routes>
   )
 }
-

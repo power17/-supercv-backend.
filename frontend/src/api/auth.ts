@@ -9,3 +9,7 @@ export function devLogin(telephone: string) {
   })
 }
 
+export function wechatLogin(code: string, key: string) {
+  const params = new URLSearchParams({ code, key })
+  return request<AuthToken>(`/v1/login/wechat/callback?${params}`)
+}
