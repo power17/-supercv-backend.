@@ -51,7 +51,8 @@ chmod +x gradlew
 
 ```bash
 mysql -u root -p -e 'CREATE DATABASE supercv_db_dev DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
-mysql -u root -p supercv_db_dev < src/main/resources/supercv.sql
+
+mysql -u root -pmysql -u root -p supercv_db_dev < src/main/resources/supercv.sql
 ```
 
 ### 3. 配置开发环境

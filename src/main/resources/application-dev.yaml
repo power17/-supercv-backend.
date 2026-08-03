@@ -44,7 +44,7 @@ spring:
 # 地址: /swagger-ui/index.html
 springdoc:
   api-docs:
-    enabled: false
+    enabled: true
   swagger-ui:
     display-request-duration: true
     groups-order: ASC

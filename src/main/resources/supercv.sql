@@ -1,4 +1,4 @@
-CREATE DATABASE supercv_db_dev;
+CREATE DATABASE IF NOT EXISTS supercv_db_dev;
 USE supercv_db_dev;
 
 -- 用户
@@ -91,7 +91,7 @@ create table if not exists `resume_template` (
     `demo_resume_id` bigint COMMENT '简历ID',
     `is_public` boolean DEFAULT FALSE COMMENT '是否公开', -- 在模版开发的过程中，简历模版不公开，用户看不到
     `is_deleted` boolean DEFAULT FALSE COMMENT '是否已删除',
-    `create_time` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建时间',,
+    `create_time` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT current_timestamp on update current_timestamp,
     primary key (`id`)
 );
@@ -154,7 +154,7 @@ create table if not exists `llm_log` (
     `output_token` int COMMENT '输出token',
     `cost_time` int COMMENT '耗时，单位毫秒ms',
     `applied` boolean COMMENT '是否应用',
-    `create_time` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建时间',,
+    `create_time` datetime NOT NULL DEFAULT current_timestamp COMMENT '创建时间',
     `update_time` datetime NOT NULL DEFAULT current_timestamp on update current_timestamp COMMENT '更新时间',
     primary key (`id`)
 );
