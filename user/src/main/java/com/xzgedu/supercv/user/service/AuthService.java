@@ -19,9 +19,9 @@ import java.util.Date;
 @Slf4j
 @Service
 public class AuthService {
-    private static final long DEFAULT_TOKEN_EXPIRE_TIME = 7 * 24 * 3600 * 1000L;
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1 * 24 * 3600 * 1000L;
-    private static long TIME_AHEAD_TO_REFRESH_TOKEN = 12 * 3600 * 1000L;
+    private static final long DEFAULT_TOKEN_EXPIRE_TIME = 1 * 24 * 3600 * 1000L;
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 3600 * 1000L;
+    private static final long TIME_AHEAD_TO_REFRESH_TOKEN = 12 * 3600 * 1000L;
 
     @Autowired
     private AuthTokenRepo authTokenRepo;
@@ -29,8 +29,13 @@ public class AuthService {
     public boolean auth(long uid, String token) {
         AuthToken authToken = authTokenRepo.getAuthToken(token);
         if (authToken == null || authToken.getUid() != uid) return false;
-        // 在快要过期（提前12小时）就给token续期（7天）
-        if (authToken.getExpireTime().before(new Date(System.currentTimeMillis() + TIME_AHEAD_TO_REFRESH_TOKEN))) {
+
+        Date expireTime = authToken.getExpireTime();
+        long now = System.currentTimeMillis();
+        if (expireTime == null || expireTime.getTime() <= now) return false;
+
+        // Token尚未过期且剩余有效期不足12小时，则将过期时间续至当前时间的1天后
+        if (expireTime.getTime() - now <= TIME_AHEAD_TO_REFRESH_TOKEN) {
             refreshToken(token);
         }
         return true;
