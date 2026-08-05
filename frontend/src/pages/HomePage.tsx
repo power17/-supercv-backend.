@@ -5,7 +5,6 @@ import {
   Crosshair,
   FileCheck2,
   LoaderCircle,
-  Menu,
   Mic2,
   Network,
   Smartphone,
@@ -14,7 +13,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { type CSSProperties, type FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { devLogin } from '../api/auth'
 import { useAuth } from '../auth/AuthContext'
 import { WechatQrLogin } from '../components/WechatQrLogin'
@@ -65,7 +64,6 @@ const products = [
 
 export function HomePage({ initialLoginOpen = false }: { initialLoginOpen?: boolean }) {
   const [loginOpen, setLoginOpen] = useState(initialLoginOpen)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [activeEngine, setActiveEngine] = useState(0)
   const [alternateLogin, setAlternateLogin] = useState(false)
   const [telephone, setTelephone] = useState('13800138000')
@@ -112,41 +110,6 @@ export function HomePage({ initialLoginOpen = false }: { initialLoginOpen?: bool
 
   return (
     <div className="youmian-home">
-      <div className="recruit-promo">
-        <span>📣</span> 招聘季超值优惠，新人注册送 50 虚拟体验币，邀请好友注册再送 50 虚拟体验币 🎉
-      </div>
-
-      <header className="youmian-home-header">
-        <div className="youmian-home-brand">
-          <Link to="/" aria-label="有面首页">
-            <span className="youmian-mark"><span>↗</span></span>
-            <strong>有面</strong>
-          </Link>
-          <button
-            className="hub-menu-button"
-            type="button"
-            aria-label="打开导航"
-            onClick={() => setMobileNavOpen((value) => !value)}
-          >
-            <Menu size={20} />
-          </button>
-          {mobileNavOpen && (
-            <nav className="youmian-home-nav">
-              <a href="#engines">核心能力</a>
-              <a href="#products">产品功能</a>
-              <Link to="/resume">简历中心</Link>
-            </nav>
-          )}
-        </div>
-        {auth ? (
-          <Link className="home-login-link" to="/resume">进入简历中心</Link>
-        ) : (
-          <button className="home-login-link" type="button" onClick={() => setLoginOpen(true)}>
-            登录 / 注册
-          </button>
-        )}
-      </header>
-
       <main>
         <section className="youmian-hero">
           <div className="youmian-shell">

@@ -85,7 +85,10 @@ export type Resume = {
 export type Template = {
   id: number
   name: string
+  pageFrame?: string
+  pageStyle?: string
   thumbnailUrl?: string
   demoResumeId?: number
+  public?: boolean
+  isPublic?: boolean
 }
-

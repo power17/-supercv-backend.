@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   color: #172033;
   background: #f6f8fc;
@@ -152,81 +154,6 @@ img {
   color: #fff;
   background: linear-gradient(135deg, #315efb, #6f8cff);
   box-shadow: 0 7px 16px rgba(49, 94, 251, 0.25);
-}
-
-.site-header {
-  position: relative;
-  z-index: 20;
-  height: 72px;
-  border-bottom: 1px solid #edf0f5;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(15px);
-}
-
-.site-header-transparent {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  border-bottom-color: rgba(222, 228, 240, 0.65);
-  background: rgba(250, 252, 255, 0.76);
-}
-
-.header-inner {
-  display: flex;
-  width: min(1180px, calc(100% - 48px));
-  height: 100%;
-  align-items: center;
-  margin: 0 auto;
-}
-
-.main-nav {
-  display: flex;
-  align-items: center;
-  gap: 34px;
-  margin-left: 68px;
-  color: #4e586b;
-  font-size: 14px;
-}
-
-.main-nav a {
-  position: relative;
-  padding: 27px 0;
-}
-
-.main-nav a:hover,
-.main-nav a.active {
-  color: var(--primary);
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: auto;
-}
-
-.text-link {
-  padding: 10px 12px;
-  color: #414c60;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.header-account {
-  min-height: 38px;
-  font-size: 14px;
-}
-
-.icon-button {
-  display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border: 1px solid #e1e5ec;
-  border-radius: 9px;
-  background: #fff;
-  cursor: pointer;
 }
 
 /* Home */
@@ -1176,77 +1103,9 @@ img {
 
 /* Youmian landing page */
 .youmian-home {
-  min-height: 100vh;
+  min-height: calc(100vh - 105px);
   color: #20242c;
   background: #fff;
-}
-
-.youmian-home-header {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  height: 65px;
-  align-items: center;
-  padding: 0 16px;
-  border-bottom: 1px solid #edf0f3;
-  background: #fff;
-}
-
-.youmian-home-brand,
-.youmian-home-brand > a {
-  display: flex;
-  align-items: center;
-}
-
-.youmian-home-brand > a {
-  gap: 8px;
-  color: #3b78eb;
-}
-
-.youmian-home-brand > a strong {
-  font-size: 21px;
-  letter-spacing: 1px;
-}
-
-.youmian-home-nav {
-  position: absolute;
-  top: 56px;
-  left: 96px;
-  display: flex;
-  width: 166px;
-  flex-direction: column;
-  gap: 3px;
-  padding: 8px;
-  border: 1px solid #e6e9ef;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 15px 38px rgba(26, 38, 62, 0.14);
-}
-
-.youmian-home-nav a {
-  padding: 10px 11px;
-  border-radius: 7px;
-  color: #4d5768;
-  font-size: 13px;
-}
-
-.youmian-home-nav a:hover {
-  color: #3677ec;
-  background: #f3f7ff;
-}
-
-.home-login-link {
-  margin-left: auto;
-  padding: 9px 11px;
-  border: 0;
-  color: #22262e;
-  background: transparent;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.home-login-link:focus {
-  outline: 0;
 }
 
 .youmian-shell {
@@ -1700,7 +1559,7 @@ img {
 
 .wechat-callback-page {
   display: grid;
-  min-height: 100vh;
+  min-height: calc(100vh - 105px);
   place-items: center;
   padding: 24px;
   background: #f7f8fa;
@@ -1844,202 +1703,9 @@ img {
 
 /* Resume hub - mirrors supercv.cn/resume */
 .resume-hub-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 105px);
   color: #20242c;
   background: #fff;
-}
-
-.recruit-promo {
-  display: flex;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 16px;
-  color: #fff;
-  background: #45a8c2;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.1px;
-  text-align: center;
-}
-
-.resume-hub-header {
-  position: relative;
-  z-index: 20;
-  display: flex;
-  height: 65px;
-  align-items: center;
-  padding: 0 16px;
-  border-bottom: 1px solid #e9ecf1;
-  background: #fff;
-}
-
-.resume-hub-brand,
-.resume-hub-brand > a,
-.resume-hub-actions {
-  display: flex;
-  align-items: center;
-}
-
-.resume-hub-brand > a {
-  gap: 8px;
-  color: #3b78eb;
-}
-
-.resume-hub-brand > a strong {
-  font-size: 21px;
-  letter-spacing: 1px;
-}
-
-.youmian-mark {
-  display: grid;
-  width: 29px;
-  height: 29px;
-  place-items: center;
-  border-radius: 8px;
-  color: #fff;
-  background: #4b82f3;
-  box-shadow: 0 4px 10px rgba(58, 112, 230, 0.2);
-  font-size: 16px;
-  font-weight: 900;
-}
-
-.youmian-mark > span {
-  transform: rotate(-8deg);
-}
-
-.hub-menu-button,
-.hub-icon-button,
-.membership-pill,
-.coin-pill,
-.hub-avatar {
-  border: 0;
-  cursor: pointer;
-}
-
-.hub-menu-button {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  margin-left: 12px;
-  border: 1px solid #edf0f4;
-  border-radius: 9px;
-  background: #fff;
-}
-
-.hub-quick-nav {
-  position: absolute;
-  top: 56px;
-  left: 90px;
-  display: flex;
-  width: 160px;
-  flex-direction: column;
-  gap: 3px;
-  padding: 8px;
-  border: 1px solid #e6e9ef;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 15px 38px rgba(26, 38, 62, 0.14);
-}
-
-.hub-quick-nav a {
-  padding: 10px 11px;
-  border-radius: 7px;
-  color: #4d5768;
-  font-size: 13px;
-}
-
-.hub-quick-nav a:hover {
-  color: #3576eb;
-  background: #f3f7ff;
-}
-
-.resume-hub-actions {
-  gap: 10px;
-  margin-left: auto;
-}
-
-.membership-pill,
-.coin-pill {
-  display: flex;
-  height: 34px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #dce6f8;
-  color: #3975e9;
-  background: #f8fbff;
-}
-
-.membership-pill {
-  width: 39px;
-  border-radius: 50%;
-}
-
-.coin-pill {
-  gap: 5px;
-  padding: 0 11px;
-  border-radius: 18px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.hub-icon-button {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  color: #262a31;
-  background: transparent;
-}
-
-.hub-account {
-  position: relative;
-}
-
-.hub-avatar {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  place-items: center;
-  border: 1px solid #d8dce4;
-  border-radius: 50%;
-  color: #fff;
-  background: linear-gradient(150deg, #30435a, #c29f78);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.hub-account-menu {
-  position: absolute;
-  top: 43px;
-  right: 0;
-  width: 170px;
-  padding: 10px;
-  border: 1px solid #e6e9ee;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 15px 38px rgba(26, 38, 62, 0.15);
-}
-
-.hub-account-menu div {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px;
-  color: #4b5567;
-  font-size: 12px;
-}
-
-.hub-account-menu button {
-  width: 100%;
-  padding: 8px;
-  border: 0;
-  border-radius: 6px;
-  color: #d34b55;
-  background: #fff7f7;
-  cursor: pointer;
 }
 
 .resume-hub-container {
@@ -2847,7 +2513,7 @@ img {
 
 /* Editor */
 .editor-page {
-  height: 100vh;
+  height: calc(100vh - 105px);
   overflow: hidden;
   background: #edf0f4;
 }
@@ -2963,7 +2629,7 @@ img {
 
 .editor-workspace {
   display: grid;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 165px);
   grid-template-columns: 72px 385px 1fr;
 }
 
@@ -3388,10 +3054,6 @@ img {
     transform: scale(0.805);
   }
 
-  .main-nav {
-    display: none;
-  }
-
   .template-grid,
   .feature-grid,
   .story-grid {
@@ -3469,14 +3131,6 @@ img {
 }
 
 @media (max-width: 640px) {
-  .youmian-home-header {
-    height: 65px;
-  }
-
-  .youmian-home-brand > a strong {
-    font-size: 21px;
-  }
-
   .youmian-hero {
     min-height: 290px;
     padding: 26px 0 47px;
@@ -3539,28 +3193,6 @@ img {
     min-height: min(522px, calc(100vh - 40px));
   }
 
-  .recruit-promo {
-    min-height: 40px;
-    font-size: 10px;
-    line-height: 1.5;
-  }
-
-  .resume-hub-header {
-    height: 60px;
-  }
-
-  .resume-hub-brand > a strong {
-    font-size: 18px;
-  }
-
-  .membership-pill {
-    display: none;
-  }
-
-  .resume-hub-actions {
-    gap: 5px;
-  }
-
   .resume-diagnosis-hero {
     padding: 27px 0 36px;
   }
@@ -3597,18 +3229,8 @@ img {
     padding: 13px 15px;
   }
 
-  .container,
-  .header-inner {
+  .container {
     width: min(100% - 30px, 1180px);
-  }
-
-  .site-header {
-    height: 64px;
-  }
-
-  .header-actions .text-link,
-  .header-account span {
-    display: none;
   }
 
   .hero {
@@ -3763,14 +3385,6 @@ img {
   .engine-tabs button {
     border-right: 0;
     border-bottom: 1px solid #edf0f3;
-  }
-
-  .coin-pill {
-    padding: 0 8px;
-  }
-
-  .hub-icon-button {
-    display: none;
   }
 
   .resume-hub-container {

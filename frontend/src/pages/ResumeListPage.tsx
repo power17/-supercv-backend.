@@ -1,19 +1,14 @@
 import {
   ArrowRight,
-  Bell,
   ChevronRight,
   Clock3,
-  Coins,
   Copy,
-  Crown,
   FilePlus2,
   LoaderCircle,
-  Menu,
   MoreHorizontal,
   PencilLine,
   Plus,
   Trash2,
-  UserRound,
   Zap,
 } from 'lucide-react'
 import { type FormEvent, useEffect, useState } from 'react'
@@ -31,7 +26,7 @@ function formatDate(value?: string) {
 }
 
 export function ResumeListPage() {
-  const { auth, logout } = useAuth()
+  const { auth } = useAuth()
   const navigate = useNavigate()
   const [resumes, setResumes] = useState<Resume[]>([])
   const [loading, setLoading] = useState(true)
@@ -40,8 +35,6 @@ export function ResumeListPage() {
   const [newName, setNewName] = useState('我的专业简历')
   const [openMenu, setOpenMenu] = useState<number | null>(null)
   const [showAll, setShowAll] = useState(false)
-  const [accountOpen, setAccountOpen] = useState(false)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
     if (!auth) return
@@ -84,75 +77,11 @@ export function ResumeListPage() {
   }
 
   function handleOptimize() {
-    if (resumes[0]) {
-      navigate(`/resume/${resumes[0].id}/edit`)
-    } else {
-      setCreating(true)
-    }
-  }
-
-  function handleLogout() {
-    logout()
-    navigate('/')
+    navigate('/resume/create')
   }
 
   return (
     <div className="resume-hub-page">
-      <div className="recruit-promo">
-        <span>📣</span> 招聘季超值优惠，新人注册送 50 虚拟体验币，邀请好友注册再送 50 虚拟体验币 🎉
-      </div>
-
-      <header className="resume-hub-header">
-        <div className="resume-hub-brand">
-          <Link to="/" aria-label="有面首页">
-            <span className="youmian-mark"><span>↗</span></span>
-            <strong>有面</strong>
-          </Link>
-          <button
-            className="hub-menu-button"
-            type="button"
-            aria-label="打开导航"
-            onClick={() => setMobileNavOpen((value) => !value)}
-          >
-            <Menu size={20} />
-          </button>
-          {mobileNavOpen && (
-            <nav className="hub-quick-nav">
-              <Link to="/resume">简历中心</Link>
-              <a href="/#templates">简历模板</a>
-              <a href="/#features">智能优化</a>
-            </nav>
-          )}
-        </div>
-        <div className="resume-hub-actions">
-          <button className="membership-pill" type="button" title="会员中心">
-            <Crown size={17} />
-          </button>
-          <button className="coin-pill" type="button" title="虚拟体验币">
-            <Coins size={15} /> <span>50</span>
-          </button>
-          <button className="hub-icon-button" type="button" title="通知">
-            <Bell size={18} fill="currentColor" />
-          </button>
-          <div className="hub-account">
-            <button
-              className="hub-avatar"
-              type="button"
-              aria-label="账户菜单"
-              onClick={() => setAccountOpen((value) => !value)}
-            >
-              {auth?.demo ? '演' : String(auth?.uid ?? '我').slice(-1)}
-            </button>
-            {accountOpen && (
-              <div className="hub-account-menu">
-                <div><UserRound size={16} /> {auth?.demo ? '演示用户' : `用户 ${auth?.uid}`}</div>
-                <button type="button" onClick={handleLogout}>退出登录</button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
       <main>
         <section className="resume-diagnosis-hero">
           <div className="resume-hub-container">

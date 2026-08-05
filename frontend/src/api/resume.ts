@@ -104,8 +104,8 @@ export async function copyResume(auth: AuthToken, resume: Resume): Promise<Resum
   )
 }
 
-export function listTemplates() {
+export function listTemplates(pageNo = 1, pageSize = 12) {
   return request<{ count: number; templates: Template[] }>(
-    '/v1/resume/template/list?page_no=1&page_size=12&is_public=true',
+    `/v1/resume/template/list?page_no=${pageNo}&page_size=${pageSize}&is_public=true`,
   )
 }
