@@ -30,9 +30,10 @@ export async function createResume(
   auth: AuthToken,
   name: string,
   templateId = 1625,
+  template?: Template,
 ): Promise<Resume> {
   if (auth.demo) {
-    return saveDemoResume({ ...newDemoResume(), name })
+    return saveDemoResume({ ...newDemoResume(), name, templateId, template })
   }
   return request<Resume>(
     '/v1/resume/create-blank-resume',

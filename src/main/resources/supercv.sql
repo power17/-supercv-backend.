@@ -96,6 +96,48 @@ create table if not exists `resume_template` (
     primary key (`id`)
 );
 
+-- 前端 React 简历模板初始化数据。page_frame 对应前端模板组件注册键。
+-- 使用 NOT EXISTS 保证脚本可以重复执行。
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '经典简历', 'classic', 'classic', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'classic' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '现代简历', 'modern', 'modern', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'modern' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '极简简历', 'minimal', 'minimal', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'minimal' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '专业简历', 'professional', 'professional', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'professional' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '双栏简历', 'two-column', 'two-column', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'two-column' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '创意简历', 'creative', 'creative', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'creative' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT 'ATS 简历', 'ats', 'ats', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'ats' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '学术简历', 'academic', 'academic', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'academic' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '优雅简历', 'elegant', 'elegant', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'elegant' AND `is_deleted` = FALSE);
+
+INSERT INTO `resume_template` (`name`, `page_frame`, `page_style`, `is_public`)
+SELECT '高管简历', 'executive', 'executive', TRUE
+WHERE NOT EXISTS (SELECT 1 FROM `resume_template` WHERE `page_frame` = 'executive' AND `is_deleted` = FALSE);
+
 -- 简历
 create table if not exists `resume` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '简历ID',

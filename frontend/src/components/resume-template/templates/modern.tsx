@@ -1,0 +1,6 @@
+import { Avatar, contactValues, ModuleContent, modulesOf, profileData, ResumePaper, type TemplateProps } from './shared'
+
+export function ModernTemplate({ resume }: TemplateProps) {
+  const { profile, values } = profileData(resume)
+  return <ResumePaper resume={resume}><div className="relative bg-[linear-gradient(135deg,#1a1a2e,#16213e_50%,#0f3460)] px-10 py-8 text-white"><div className="flex items-center gap-6"><Avatar resume={resume} className="rounded-xl border-2 border-[#e94560]" /><div><h1 className="text-3xl font-bold">{profile?.name || '你的姓名'}</h1><p className="mt-1 text-base text-[#e94560]">{values.jobIntention || '求职意向'}</p><p className="mt-3 text-xs text-zinc-300">{contactValues(resume).join(' | ')}</p></div></div><i className="absolute inset-x-0 bottom-0 h-[3px] bg-[linear-gradient(90deg,#e94560,#0f3460,transparent)]" /></div><div className="p-8">{modulesOf(resume).map((module) => <section className="mb-6" key={module.key}><h2 className="mb-3 flex items-center gap-2 text-sm font-bold tracking-wider text-[#e94560] before:h-[3px] before:w-7 before:rounded before:bg-[#e94560]">{module.title}</h2><ModuleContent module={module} accent="#0f3460" /></section>)}</div></ResumePaper>
+}

@@ -2400,7 +2400,6 @@ img {
 .resume-paper {
   width: 794px;
   min-height: 1123px;
-  padding: var(--resume-pad-y) var(--resume-pad-x);
   color: #253047;
   background: #fff;
   box-shadow: 0 4px 28px rgba(28, 40, 65, 0.13);

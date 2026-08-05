@@ -73,6 +73,7 @@ export type Resume = {
   uid: number
   name: string
   templateId: number
+  template?: Template
   fileUrl?: string
   rawData?: RawData
   extraStyle?: ExtraStyle

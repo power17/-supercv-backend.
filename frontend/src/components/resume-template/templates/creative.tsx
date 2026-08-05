@@ -1,0 +1,6 @@
+import { Avatar, contactValues, ModuleContent, modulesOf, profileData, ResumePaper, type TemplateProps } from './shared'
+
+export function CreativeTemplate({ resume }: TemplateProps) {
+  const { profile, values } = profileData(resume)
+  return <ResumePaper resume={resume} className="bg-[#fffaf7]"><div className="relative overflow-hidden bg-[linear-gradient(135deg,#7c3aed,#f97316)] px-10 py-9 text-white"><i className="absolute -right-8 -top-8 size-32 rounded-full bg-white/10" /><div className="relative flex items-center gap-5"><Avatar resume={resume} className="rounded-2xl border-4 border-white/30" /><div><h1 className="text-3xl font-black">{profile?.name || '你的姓名'}</h1><p className="mt-1 text-orange-100">{values.jobIntention || '求职意向'}</p><p className="mt-3 text-xs text-white/75">{contactValues(resume).join(' · ')}</p></div></div></div><div className="grid grid-cols-2 gap-5 p-8">{modulesOf(resume).map((module, index) => <section className={`rounded-xl border border-purple-100 bg-white p-4 shadow-sm ${index === 0 ? 'col-span-2' : ''}`} key={module.key}><h2 className="mb-3 text-sm font-bold text-purple-700">{module.title}</h2><ModuleContent module={module} accent="#7c3aed" /></section>)}</div></ResumePaper>
+}

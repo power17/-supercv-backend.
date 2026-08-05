@@ -5,10 +5,12 @@ import {
   LoaderCircle,
   X,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createResume, listTemplates } from '../api/resume'
 import { useAuth } from '../auth/AuthContext'
+import { TemplateResumePreview } from '../components/resume-template/ResumeTemplate'
+import { createTemplateDemoResume } from '../components/resume-template/demoResume'
 import type { Template } from '../types'
 
 const PAGE_SIZE = 12
@@ -54,7 +56,7 @@ export function ResumeCreatePage() {
     setCreatingId(template.id)
     setError('')
     try {
-      const resume = await createResume(auth, '我的专业简历', template.id)
+      const resume = await createResume(auth, '我的专业简历', template.id, template)
       navigate(`/resume/${resume.id}/edit`)
     } catch {
       setError('创建简历失败，请稍后重试')
@@ -63,6 +65,7 @@ export function ResumeCreatePage() {
   }
 
   const pages = Math.max(1, Math.ceil(count / PAGE_SIZE))
+  const sampleResume = useMemo(createTemplateDemoResume, [])
 
   return (
     <div className="min-h-[calc(100vh-105px)] bg-white text-[#24272e]">
@@ -100,7 +103,7 @@ export function ResumeCreatePage() {
             {templates.map((template) => (
               <article className="group overflow-hidden rounded-[10px] border border-[#e5e9f0] bg-white p-[14px] transition hover:-translate-y-0.5 hover:border-[#cad9f4] hover:shadow-[0_10px_28px_rgba(38,70,120,0.09)] max-md:p-[9px]" key={template.id}>
                 <button className="group/image relative flex h-[375px] w-full cursor-zoom-in items-start justify-center overflow-hidden border-0 bg-[#f7f8fa] p-0 max-md:h-[245px] max-[460px]:h-[420px]" type="button" onClick={() => setPreview(template)}>
-                  <TemplateThumbnail template={template} />
+                  <TemplateResumePreview resume={sampleResume} template={template} scale={0.32} />
                   <span className="absolute inset-0 flex items-center justify-center gap-[7px] bg-[rgba(24,34,51,0.37)] text-[13px] font-semibold text-white opacity-0 transition-opacity group-hover/image:opacity-100"><Eye size={17} /> 查看大图</span>
                 </button>
                 <h3 className="mt-4 mb-3 overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-semibold text-[#202329]">{template.name}</h3>
@@ -135,8 +138,8 @@ export function ResumeCreatePage() {
               <strong>{preview.name}</strong>
               <button className="grid size-8 cursor-pointer place-items-center rounded-md border-0 bg-[#f4f5f7] text-[#606773]" type="button" aria-label="关闭预览" onClick={() => setPreview(null)}><X size={20} /></button>
             </div>
-            <div className="flex min-h-0 justify-center overflow-auto bg-[#eef1f5] p-[18px] [&>img]:h-auto [&>img]:min-h-[580px] [&>img]:w-[min(430px,100%)] [&>img]:bg-white [&>img]:object-contain [&>img]:shadow-[0_5px_18px_rgba(31,43,62,0.12)] [&>div]:h-auto [&>div]:min-h-[580px] [&>div]:w-[min(430px,100%)]">
-              <TemplateThumbnail template={preview} />
+            <div className="h-[620px] min-h-0 overflow-hidden bg-[#eef1f5] p-[18px]">
+              <TemplateResumePreview resume={sampleResume} template={preview} scale={0.52} />
             </div>
             <button className="m-[14px_18px_18px] h-[42px] shrink-0 cursor-pointer rounded-[7px] border-0 bg-[#3279ed] font-semibold text-white" type="button" onClick={() => useTemplate(preview)}>
               使用此模版
@@ -146,43 +149,4 @@ export function ResumeCreatePage() {
       )}
     </div>
   )
-}
-
-function TemplateThumbnail({ template }: { template: Template }) {
-  const [failed, setFailed] = useState(false)
-  if (!template.thumbnailUrl || failed) return <TemplatePlaceholder name={template.name} />
-  return (
-    <img
-      className="h-full w-full bg-white object-contain"
-      src={template.thumbnailUrl}
-      alt={`${template.name}预览图`}
-      loading="lazy"
-      onError={() => setFailed(true)}
-    />
-  )
-}
-
-function TemplatePlaceholder({ name }: { name: string }) {
-  return (
-    <div className="flex h-full w-full flex-col items-stretch bg-white px-[25px] py-7 text-left text-[#1f2937]" aria-label={`${name}暂无缩略图`}>
-      <strong className="mb-5 text-center">简历</strong>
-      <PlaceholderLine />
-      <PlaceholderLine short />
-      <PlaceholderLine />
-      <PlaceholderTitle>专业技能</PlaceholderTitle>
-      <PlaceholderLine short />
-      <PlaceholderLine />
-      <PlaceholderTitle>工作经历</PlaceholderTitle>
-      <PlaceholderLine short />
-      <PlaceholderLine />
-    </div>
-  )
-}
-
-function PlaceholderLine({ short = false }: { short?: boolean }) {
-  return <span className={`my-[5px] h-1 rounded-sm bg-[#d8dce3] ${short ? 'w-3/4' : 'w-full'}`} />
-}
-
-function PlaceholderTitle({ children }: { children: string }) {
-  return <i className="mt-[18px] mb-[3px] border-b-2 border-[#3b7af0] pb-[5px] text-[11px] not-italic text-[#3b7af0]">{children}</i>
 }
