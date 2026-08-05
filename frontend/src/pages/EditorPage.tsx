@@ -1,3 +1,4 @@
+import { Modal } from 'antd'
 import {
   ArrowDown,
   ArrowUp,
@@ -46,6 +47,24 @@ const inputClass = 'h-9 w-full rounded-md border border-[#dfe3e9] bg-white px-2.
 
 function clone<T>(value: T): T { return structuredClone(value) }
 
+function resumeDiagnosticText(resume: Resume) {
+  const profile = resume.rawData?.profile
+  const profileLines = [
+    profile?.name ? `姓名：${profile.name}` : '',
+    ...(profile?.items ?? []).filter((item) => item.value?.trim()).map((item) => `${item.label}：${item.value}`),
+  ].filter(Boolean)
+  const moduleLines = (resume.rawData?.modules ?? [])
+    .filter((module) => module.enabled)
+    .flatMap((module) => [
+      `\n【${module.title}】`,
+      ...module.items.flatMap((item) => [
+        [item.titleMajor, item.titleMinor, item.titleOther, item.titleDate].filter(Boolean).join(' | '),
+        item.content?.trim() ?? '',
+      ].filter(Boolean)),
+    ])
+  return [...profileLines, ...moduleLines].join('\n').trim()
+}
+
 export function EditorPage() {
   const { id } = useParams()
   const { auth } = useAuth()
@@ -59,6 +78,9 @@ export function EditorPage() {
   const [activeSection, setActiveSection] = useState('profile')
   const [zoom, setZoom] = useState(82)
   const [optimizingKey, setOptimizingKey] = useState('')
+  const [diagnosing, setDiagnosing] = useState(false)
+  const [diagnosisOpen, setDiagnosisOpen] = useState(false)
+  const [diagnosisResult, setDiagnosisResult] = useState('')
   const editor = useResumeEditor(auth, initialResume)
   const { resume, mutate } = editor
 
@@ -186,6 +208,31 @@ export function EditorPage() {
     }
   }
 
+  async function diagnoseResume() {
+    if (!auth || !resume || diagnosing) return
+    const content = resumeDiagnosticText(resume)
+    if (!content) {
+      setActionError('请先填写简历内容，再进行 AI 诊断')
+      return
+    }
+    setDiagnosing(true)
+    setActionError('')
+    try {
+      await editor.save()
+      const result = await optimizeResumeContent(
+        auth,
+        '整份简历诊断。请从信息完整度、专业表达、成果量化、内容清晰度和岗位匹配度五个方面分项诊断，指出问题并给出可执行的修改建议，不要直接重写全文',
+        content,
+      )
+      setDiagnosisResult(result)
+      setDiagnosisOpen(true)
+    } catch {
+      setActionError('AI 诊断失败，请检查 AI 优化剩余次数或稍后重试')
+    } finally {
+      setDiagnosing(false)
+    }
+  }
+
   if (loading) return <EditorLoading label="正在打开简历编辑器" />
   if (!resume) {
     return (
@@ -208,6 +255,8 @@ export function EditorPage() {
         canRedo={editor.canRedo}
         onNameChange={(name) => mutate((draft) => { draft.name = name })}
         onSave={editor.save}
+        onDiagnose={diagnoseResume}
+        diagnosing={diagnosing}
         onUndo={editor.undo}
         onRedo={editor.redo}
         onExport={async () => { await editor.save(); window.print() }}
@@ -259,6 +308,19 @@ export function EditorPage() {
           <button className={`rounded-full px-4 py-2 text-xs ${mobileView === 'preview' ? 'bg-[#3279ed] text-white' : 'text-[#647083]'}`} type="button" onClick={() => setMobileView('preview')}>预览</button>
         </div>
       </div>
+
+      <Modal
+        title={<span className="flex items-center gap-2 text-[#343b49]"><Sparkles size={18} className="text-[#6554d9]" /> AI 简历诊断报告</span>}
+        open={diagnosisOpen}
+        width={720}
+        centered
+        onCancel={() => setDiagnosisOpen(false)}
+        footer={<button className="h-9 rounded-md border-0 bg-[#3279ed] px-5 text-sm font-semibold text-white" type="button" onClick={() => setDiagnosisOpen(false)}>我知道了</button>}
+      >
+        <div className="max-h-[60vh] overflow-y-auto rounded-lg bg-[#f7f8fb] p-4 text-sm leading-7 whitespace-pre-wrap text-[#4d5666]">
+          {diagnosisResult}
+        </div>
+      </Modal>
     </div>
   )
 }

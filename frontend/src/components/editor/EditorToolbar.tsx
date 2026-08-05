@@ -5,6 +5,7 @@ import {
   LoaderCircle,
   Redo2,
   Save,
+  Sparkles,
   Undo2,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -17,6 +18,8 @@ type EditorToolbarProps = {
   onNameChange: (name: string) => void
   onSave: () => void
   onExport: () => void
+  onDiagnose: () => void
+  diagnosing: boolean
   onUndo: () => void
   onRedo: () => void
   canUndo: boolean
@@ -31,6 +34,8 @@ export function EditorToolbar({
   onNameChange,
   onSave,
   onExport,
+  onDiagnose,
+  diagnosing,
   onUndo,
   onRedo,
   canUndo,
@@ -70,6 +75,15 @@ export function EditorToolbar({
         >
           {saving ? <LoaderCircle className="animate-spin" size={15} /> : <Save size={15} />}
           <span className="max-sm:hidden">保存</span>
+        </button>
+        <button
+          className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md border border-[#d9d2fb] bg-[#f8f7ff] px-3 text-xs font-semibold text-[#6554d9] hover:border-[#b8acf3] hover:bg-[#f2efff] disabled:cursor-wait disabled:opacity-60"
+          type="button"
+          disabled={diagnosing}
+          onClick={onDiagnose}
+        >
+          {diagnosing ? <LoaderCircle className="animate-spin" size={15} /> : <Sparkles size={15} />}
+          <span className="max-sm:hidden">{diagnosing ? '诊断中' : 'AI 诊断'}</span>
         </button>
         <button className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[#3279ed] px-3 text-xs font-semibold text-white hover:bg-[#256be0]" type="button" onClick={onExport}>
           <Download size={15} /> <span className="max-sm:hidden">导出 PDF</span>

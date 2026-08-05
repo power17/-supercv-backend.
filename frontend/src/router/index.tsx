@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '../components/ProtectedRoute'
-import { EditorPage } from '../pages/EditorPage'
 import { HomePage } from '../pages/HomePage'
 import { LoginPage } from '../pages/LoginPage'
 import { ResumeCreatePage } from '../pages/ResumeCreatePage'
@@ -10,6 +9,7 @@ import { WechatLoginCallbackPage } from '../pages/WechatLoginCallbackPage'
 import { SiteLayout } from './SiteLayout'
 
 const UserResumePage = lazy(() => import('../pages/UserResumePage').then((module) => ({ default: module.UserResumePage })))
+const EditorPage = lazy(() => import('../pages/EditorPage').then((module) => ({ default: module.EditorPage })))
 
 export function AppRoutes() {
   return (
@@ -48,7 +48,9 @@ export function AppRoutes() {
           path="resume/:id/edit"
           element={
             <ProtectedRoute>
-              <EditorPage />
+              <Suspense fallback={<div className="flex min-h-[420px] items-center justify-center text-sm text-[#7e8795]">正在打开简历编辑器</div>}>
+                <EditorPage />
+              </Suspense>
             </ProtectedRoute>
           }
         />
