@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { EditorPage } from '../pages/EditorPage'
@@ -7,6 +8,8 @@ import { ResumeCreatePage } from '../pages/ResumeCreatePage'
 import { ResumeListPage } from '../pages/ResumeListPage'
 import { WechatLoginCallbackPage } from '../pages/WechatLoginCallbackPage'
 import { SiteLayout } from './SiteLayout'
+
+const UserResumePage = lazy(() => import('../pages/UserResumePage').then((module) => ({ default: module.UserResumePage })))
 
 export function AppRoutes() {
   return (
@@ -20,6 +23,16 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <ResumeListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="user/resume"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<div className="flex min-h-[420px] items-center justify-center text-sm text-[#7e8795]">正在加载我的简历</div>}>
+                <UserResumePage />
+              </Suspense>
             </ProtectedRoute>
           }
         />

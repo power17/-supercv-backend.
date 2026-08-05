@@ -1,4 +1,4 @@
-import { Bell, Coins, Crown, Gift, LogOut, UserRound } from 'lucide-react'
+import { Bell, Coins, Crown, FileText, Gift, LogOut, UserRound } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
@@ -92,6 +92,9 @@ export function YoumianHeader() {
                         <small className="mt-0.5 block text-[10px] text-[#9aa1ad]">个人账户</small>
                       </span>
                     </div>
+                    <Link className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-xs text-[#5c6472] hover:bg-[#f3f7ff] hover:text-[#2876ed]" to="/user/resume" role="menuitem">
+                      <FileText size={15} /> 我的简历
+                    </Link>
                     <button className="flex w-full cursor-pointer items-center gap-2.5 border-0 bg-white px-3.5 py-2.5 text-left text-xs text-[#5c6472] hover:bg-[#fff3f3] hover:text-[#d3414b]" type="button" role="menuitem" onClick={handleLogout}>
                       <LogOut size={15} /> 退出登录
                     </button>

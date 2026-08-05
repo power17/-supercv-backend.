@@ -110,3 +110,19 @@ export function listTemplates(pageNo = 1, pageSize = 12) {
     `/v1/resume/template/list?page_no=${pageNo}&page_size=${pageSize}&is_public=true`,
   )
 }
+
+export function optimizeResumeContent(
+  auth: AuthToken,
+  moduleName: string,
+  content: string,
+) {
+  return request<string>(
+    '/v1/resume/optimize/module-item-content',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody({ module_name: moduleName, content }),
+    },
+    auth,
+  )
+}

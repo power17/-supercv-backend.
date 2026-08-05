@@ -17,6 +17,10 @@ type EditorToolbarProps = {
   onNameChange: (name: string) => void
   onSave: () => void
   onExport: () => void
+  onUndo: () => void
+  onRedo: () => void
+  canUndo: boolean
+  canRedo: boolean
 }
 
 export function EditorToolbar({
@@ -27,11 +31,15 @@ export function EditorToolbar({
   onNameChange,
   onSave,
   onExport,
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
 }: EditorToolbarProps) {
   return (
-    <header className="relative z-10 grid h-[58px] shrink-0 grid-cols-[1fr_auto_1fr] items-center border-b border-[#dde2ea] bg-white px-4 max-md:grid-cols-[1fr_auto] max-md:px-2">
+    <header className="relative z-10 grid h-[58px] shrink-0 grid-cols-[1fr_auto_1fr] items-center border-b border-[#dde2ea] bg-white px-4 max-md:grid-cols-[1fr_auto] max-md:px-2 print:hidden">
       <div className="flex min-w-0 items-center gap-2">
-        <Link className="grid size-9 shrink-0 place-items-center rounded-md text-[#697386] hover:bg-[#f2f4f7]" to="/resume" aria-label="返回简历列表">
+        <Link className="grid size-9 shrink-0 place-items-center rounded-md text-[#697386] hover:bg-[#f2f4f7]" to="/user/resume" aria-label="返回我的简历">
           <ArrowLeft size={19} />
         </Link>
         <span className="hidden h-6 w-px bg-[#e4e7ec] sm:block" />
@@ -43,13 +51,13 @@ export function EditorToolbar({
         />
         <span className={`hidden items-center gap-1 whitespace-nowrap text-[11px] sm:flex ${saved ? 'text-[#34a374]' : 'text-[#9aa2af]'}`}>
           {saved ? <Check size={14} /> : null}
-          {saved ? '已保存' : '有未保存修改'}
+          {saving ? '保存中…' : saved ? '已自动保存' : '等待自动保存'}
         </span>
       </div>
 
       <div className="flex items-center gap-1 max-md:hidden">
-        <button className="grid size-8 place-items-center rounded-md border-0 bg-transparent text-[#a4aab4]" type="button" title="撤销" disabled><Undo2 size={17} /></button>
-        <button className="grid size-8 place-items-center rounded-md border-0 bg-transparent text-[#a4aab4]" type="button" title="重做" disabled><Redo2 size={17} /></button>
+        <button className="grid size-8 cursor-pointer place-items-center rounded-md border-0 bg-transparent text-[#677286] hover:bg-[#f2f4f7] disabled:cursor-default disabled:text-[#c5cad2] disabled:hover:bg-transparent" type="button" title="撤销（Ctrl/⌘ + Z）" disabled={!canUndo} onClick={onUndo}><Undo2 size={17} /></button>
+        <button className="grid size-8 cursor-pointer place-items-center rounded-md border-0 bg-transparent text-[#677286] hover:bg-[#f2f4f7] disabled:cursor-default disabled:text-[#c5cad2] disabled:hover:bg-transparent" type="button" title="重做（Ctrl/⌘ + Shift + Z）" disabled={!canRedo} onClick={onRedo}><Redo2 size={17} /></button>
       </div>
 
       <div className="flex items-center justify-end gap-2">
