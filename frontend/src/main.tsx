@@ -1,3 +1,5 @@
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/locale/zh_CN'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
@@ -9,9 +11,19 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <ConfigProvider
+          locale={zhCN}
+          theme={{
+            token: {
+              colorPrimary: '#2876ed',
+              borderRadius: 7,
+              fontFamily: 'Inter, "PingFang SC", "Microsoft YaHei", sans-serif',
+            },
+          }}
+        >
+          <App />
+        </ConfigProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )
-

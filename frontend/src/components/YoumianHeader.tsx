@@ -1,12 +1,42 @@
-import { Bell, Coins, Crown, Gift } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Bell, Coins, Crown, Gift, LogOut, UserRound } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 
 export function YoumianHeader() {
-  const { auth } = useAuth()
+  const { auth, logout } = useAuth()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
   const homeActive = pathname === '/' || pathname.startsWith('/login')
   const resumeActive = pathname.startsWith('/resume')
+
+  useEffect(() => {
+    setUserMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!userMenuOpen) return
+    function closeOnOutsideClick(event: MouseEvent) {
+      if (!userMenuRef.current?.contains(event.target as Node)) setUserMenuOpen(false)
+    }
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setUserMenuOpen(false)
+    }
+    document.addEventListener('mousedown', closeOnOutsideClick)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('mousedown', closeOnOutsideClick)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [userMenuOpen])
+
+  function handleLogout() {
+    setUserMenuOpen(false)
+    logout()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <div className="shrink-0 print:hidden">
@@ -42,9 +72,32 @@ export function YoumianHeader() {
               <button className="grid size-[34px] cursor-pointer place-items-center border-0 bg-transparent text-[#262a31] max-sm:hidden" type="button" aria-label="通知">
                 <Bell size={17} fill="currentColor" />
               </button>
-              <Link className="grid size-[31px] place-items-center rounded-full bg-[linear-gradient(145deg,#27394d,#c2a279)] text-xs font-bold text-white" to="/resume" aria-label="进入简历中心">
-                {String(auth.uid).slice(-1)}
-              </Link>
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  className="grid size-[31px] cursor-pointer place-items-center rounded-full border-0 bg-[linear-gradient(145deg,#27394d,#c2a279)] text-xs font-bold text-white shadow-[0_2px_7px_rgba(29,40,55,0.2)] ring-[#3477ef] transition hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  type="button"
+                  aria-label="打开用户菜单"
+                  aria-haspopup="menu"
+                  aria-expanded={userMenuOpen}
+                  onClick={() => setUserMenuOpen((open) => !open)}
+                >
+                  {String(auth.uid).slice(-1)}
+                </button>
+                {userMenuOpen ? (
+                  <div className="absolute top-[42px] right-0 z-50 w-[190px] overflow-hidden rounded-lg border border-[#e5e8ee] bg-white py-1.5 shadow-[0_12px_32px_rgba(24,34,51,0.16)]" role="menu">
+                    <div className="flex items-center gap-2.5 border-b border-[#eef0f3] px-3.5 py-3">
+                      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#edf3ff] text-[#3477ef]"><UserRound size={16} /></span>
+                      <span className="min-w-0">
+                        <strong className="block truncate text-xs font-semibold text-[#303642]">用户 {auth.uid}</strong>
+                        <small className="mt-0.5 block text-[10px] text-[#9aa1ad]">个人账户</small>
+                      </span>
+                    </div>
+                    <button className="flex w-full cursor-pointer items-center gap-2.5 border-0 bg-white px-3.5 py-2.5 text-left text-xs text-[#5c6472] hover:bg-[#fff3f3] hover:text-[#d3414b]" type="button" role="menuitem" onClick={handleLogout}>
+                      <LogOut size={15} /> 退出登录
+                    </button>
+                  </div>
+                ) : null}
+              </div>
             </div>
           ) : (
             <Link className="ml-auto cursor-pointer border-0 bg-transparent px-[11px] py-[9px] text-[15px] text-[#22262e]" to="/login">

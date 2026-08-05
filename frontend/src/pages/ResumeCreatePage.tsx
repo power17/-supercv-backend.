@@ -1,4 +1,5 @@
 import {
+  Check,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -7,10 +8,11 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createResume, listTemplates } from '../api/resume'
+import { createResume, listTemplates, updateResume } from '../api/resume'
 import { useAuth } from '../auth/AuthContext'
 import { TemplateResumePreview } from '../components/resume-template/ResumeTemplate'
 import { createTemplateDemoResume } from '../components/resume-template/demoResume'
+import { createEmptyRawData } from '../lib/demo'
 import type { Template } from '../types'
 
 const PAGE_SIZE = 12
@@ -30,7 +32,9 @@ export function ResumeCreatePage() {
   const [page, setPage] = useState(1)
   const [reloadKey, setReloadKey] = useState(0)
   const [loading, setLoading] = useState(true)
-  const [creatingId, setCreatingId] = useState<number | null>(null)
+  const [creatingMode, setCreatingMode] = useState<'blank' | 'content' | null>(null)
+  const [currentStep, setCurrentStep] = useState<1 | 2>(1)
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
   const [preview, setPreview] = useState<Template | null>(null)
   const [error, setError] = useState('')
 
@@ -51,16 +55,32 @@ export function ResumeCreatePage() {
     }
   }, [page, reloadKey])
 
-  async function useTemplate(template: Template) {
-    if (!auth) return
-    setCreatingId(template.id)
+  function useTemplate(template: Template) {
+    setSelectedTemplate(template)
+    setPreview(null)
+    setCurrentStep(2)
+    setError('')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  async function createSelectedResume(withTemplateContent: boolean) {
+    if (!auth || !selectedTemplate) return
+    setCreatingMode(withTemplateContent ? 'content' : 'blank')
     setError('')
     try {
-      const resume = await createResume(auth, '我的专业简历', template.id, template)
-      navigate(`/resume/${resume.id}/edit`)
+      const resume = await createResume(auth, '我的专业简历', selectedTemplate.id, selectedTemplate)
+      const demo = createTemplateDemoResume()
+      const editableResume = await updateResume(auth, {
+        ...resume,
+        rawData: withTemplateContent
+          ? structuredClone(demo.rawData)
+          : createEmptyRawData(),
+        extraStyle: resume.extraStyle ?? demo.extraStyle,
+      })
+      navigate(`/resume/${editableResume.id}/edit`)
     } catch {
       setError('创建简历失败，请稍后重试')
-      setCreatingId(null)
+      setCreatingMode(null)
     }
   }
 
@@ -71,20 +91,25 @@ export function ResumeCreatePage() {
     <div className="min-h-[calc(100vh-105px)] bg-white text-[#24272e]">
       <main className="mx-auto w-[min(1280px,calc(100%-40px))] py-[68px] pb-20 max-sm:w-[calc(100%-28px)] max-sm:pt-[38px]">
         <section className="mx-auto mb-[50px] grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-lg:gap-y-[22px] max-sm:mb-8 max-sm:grid-cols-1" aria-label="简历优化步骤">
-          {steps.map((step, index) => (
-            <div
-              className={`relative flex min-h-[82px] gap-3 pr-6 max-sm:min-h-0 max-sm:after:hidden [&:not(:last-child)]:after:absolute [&:not(:last-child)]:after:top-4 [&:not(:last-child)]:after:right-0 [&:not(:last-child)]:after:h-px [&:not(:last-child)]:after:w-[38%] [&:not(:last-child)]:after:bg-[#ebedf0] ${index === 0 ? 'text-[#34373d]' : 'text-[#a2a5aa]'}`}
-              key={step.title}
-            >
-              <div className={`grid size-8 shrink-0 place-items-center rounded-full text-sm ${index === 0 ? 'bg-[#287df0] text-white' : 'bg-[#f3f4f5] text-[#8a8e95]'}`}>
-                {index + 1}
+          {steps.map((step, index) => {
+            const stepNumber = index + 1
+            const active = stepNumber === currentStep
+            const completed = stepNumber < currentStep
+            return (
+              <div
+                className={`relative flex min-h-[82px] gap-3 pr-6 max-sm:min-h-0 max-sm:after:hidden [&:not(:last-child)]:after:absolute [&:not(:last-child)]:after:top-4 [&:not(:last-child)]:after:right-0 [&:not(:last-child)]:after:h-px [&:not(:last-child)]:after:w-[38%] ${completed ? '[&:not(:last-child)]:after:bg-[#287df0]' : '[&:not(:last-child)]:after:bg-[#ebedf0]'} ${active || completed ? 'text-[#34373d]' : 'text-[#a2a5aa]'}`}
+                key={step.title}
+              >
+                <div className={`grid size-8 shrink-0 place-items-center rounded-full text-sm ${active ? 'bg-[#287df0] text-white' : completed ? 'bg-[#e7f2ff] text-[#287df0]' : 'bg-[#f3f4f5] text-[#8a8e95]'}`}>
+                  {completed ? <Check size={16} /> : stepNumber}
+                </div>
+                <div>
+                  <h2 className="mt-1 mb-[7px] text-[15px] font-medium">{step.title}</h2>
+                  <p className="m-0 max-w-[185px] text-xs leading-[1.65]">{step.description}</p>
+                </div>
               </div>
-              <div>
-                <h2 className="mt-1 mb-[7px] text-[15px] font-medium">{step.title}</h2>
-                <p className="m-0 max-w-[185px] text-xs leading-[1.65]">{step.description}</p>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </section>
 
         {error && (
@@ -94,7 +119,47 @@ export function ResumeCreatePage() {
           </div>
         )}
 
-        {loading ? (
+        {currentStep === 2 && selectedTemplate ? (
+          <section className="mx-auto max-w-[960px]">
+            <div className="grid grid-cols-3 gap-[30px] max-md:grid-cols-1">
+              <button
+                className="flex h-[200px] cursor-pointer flex-col items-center justify-center rounded-[10px] border border-[#e4e9f0] bg-white transition hover:-translate-y-1 hover:border-[#9fc0f8] hover:shadow-[0_12px_30px_rgba(43,93,170,0.1)] disabled:cursor-wait"
+                type="button"
+                disabled={creatingMode !== null}
+                onClick={() => createSelectedResume(false)}
+              >
+                {creatingMode === 'blank' ? <LoaderCircle className="spin mb-3" size={22} /> : null}
+                <strong className="text-xl text-[#171a20]">创建空白简历</strong>
+                <span className="mt-3 text-[15px] text-[#a1a5ac]">仅包含模板样式、内容为空</span>
+              </button>
+              <button
+                className="flex h-[200px] cursor-pointer flex-col items-center justify-center rounded-[10px] border border-[#e4e9f0] bg-white transition hover:-translate-y-1 hover:border-[#9fc0f8] hover:shadow-[0_12px_30px_rgba(43,93,170,0.1)] disabled:cursor-wait"
+                type="button"
+                disabled={creatingMode !== null}
+                onClick={() => createSelectedResume(true)}
+              >
+                {creatingMode === 'content' ? <LoaderCircle className="spin mb-3" size={22} /> : null}
+                <strong className="text-xl text-[#171a20]">创建简历</strong>
+                <span className="mt-3 text-[15px] text-[#a1a5ac]">包含模板样式和模板内容</span>
+              </button>
+              <label className="flex h-[200px] cursor-pointer flex-col items-center justify-center rounded-[10px] border border-[#e4e9f0] bg-white transition hover:-translate-y-1 hover:border-[#9fc0f8] hover:shadow-[0_12px_30px_rgba(43,93,170,0.1)]">
+                <strong className="text-xl text-[#171a20]">上传已有简历文件</strong>
+                <span className="mt-3 text-[15px] text-[#a1a5ac]">支持 PDF 格式的简历文件</span>
+                <input
+                  className="hidden"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  onChange={() => setError('PDF 上传需要先配置 OSS 文件上传服务')}
+                />
+              </label>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button className="cursor-pointer border-0 bg-transparent text-[15px] text-[#2876ed]" type="button" onClick={() => { setCurrentStep(1); setSelectedTemplate(null); setCreatingMode(null); setError('') }}>
+                返回上一步
+              </button>
+            </div>
+          </section>
+        ) : loading ? (
           <div className="flex min-h-[420px] items-center justify-center gap-[9px] text-[#7d8490]"><LoaderCircle className="spin" /> 正在加载简历模版</div>
         ) : templates.length === 0 ? (
           <div className="flex min-h-[420px] items-center justify-center text-[#7d8490]">暂时没有可用的公开模版</div>
@@ -108,8 +173,8 @@ export function ResumeCreatePage() {
                 </button>
                 <h3 className="mt-4 mb-3 overflow-hidden text-ellipsis whitespace-nowrap text-[15px] font-semibold text-[#202329]">{template.name}</h3>
                 <div className="grid grid-cols-2 overflow-hidden rounded-md border border-[#e7eaf0]">
-                  <button className="flex h-[31px] cursor-pointer items-center justify-center gap-[5px] border-0 border-r border-[#e7eaf0] bg-[#f9fafb] text-xs font-semibold text-[#2674eb] hover:bg-[#f1f6ff] disabled:cursor-not-allowed disabled:opacity-60" type="button" disabled={creatingId !== null} onClick={() => useTemplate(template)}>
-                    {creatingId === template.id ? <LoaderCircle className="spin" size={15} /> : '使用'}
+                  <button className="flex h-[31px] cursor-pointer items-center justify-center gap-[5px] border-0 border-r border-[#e7eaf0] bg-[#f9fafb] text-xs font-semibold text-[#2674eb] hover:bg-[#f1f6ff]" type="button" onClick={() => useTemplate(template)}>
+                    使用
                   </button>
                   <button className="h-[31px] cursor-pointer border-0 bg-[#f9fafb] text-xs text-[#4f5662] hover:bg-[#f1f6ff]" type="button" onClick={() => setPreview(template)}>预览</button>
                 </div>
@@ -118,7 +183,7 @@ export function ResumeCreatePage() {
           </section>
         )}
 
-        {!loading && count > PAGE_SIZE && (
+        {currentStep === 1 && !loading && count > PAGE_SIZE && (
           <nav className="mt-[42px] flex items-center justify-center gap-[18px]" aria-label="模版分页">
             <button className="flex h-[34px] cursor-pointer items-center gap-1 rounded-md border border-[#dfe4ec] bg-white px-[13px] text-[#4f5868] disabled:cursor-not-allowed disabled:text-[#b4b8bf]" type="button" disabled={page === 1} onClick={() => setPage((value) => value - 1)}>
               <ChevronLeft size={17} /> 上一页

@@ -112,6 +112,27 @@ export const defaultRawData: RawData = {
   ],
 }
 
+export function createEmptyRawData(): RawData {
+  const rawData = structuredClone(defaultRawData)
+  rawData.profile.name = ''
+  rawData.profile.photoUrl = ''
+  rawData.profile.items.forEach((item) => {
+    item.value = ''
+  })
+  rawData.modules.forEach((module) => {
+    const firstItem = module.items[0]
+    module.items = [{
+      ...(firstItem ?? createEmptyModule(module.key, module.title).items[0]),
+      titleMajor: '',
+      titleMinor: '',
+      titleOther: '',
+      titleDate: '',
+      content: '',
+    }]
+  })
+  return rawData
+}
+
 export const newDemoResume = (id = Date.now()): Resume => ({
   id,
   uid: 10001,
@@ -183,4 +204,3 @@ export function createEmptyModule(key: string, title: string): ResumeModule {
     ],
   }
 }
-
